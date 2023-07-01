@@ -19,7 +19,6 @@ const UserSchema = new mongoose.Schema({
     ],
     unique: true,
   },
-
   password: {
     type: String,
     required: [true, "Please provide password"],
@@ -36,8 +35,18 @@ UserSchema.pre("save", async function (next) {
 // There is a possibility to create custom method for our document.
 // So instead writing logic of signing of jwt token in controller I`ll write it here.
 UserSchema.methods.createJWT = function () {
-  return jwt.sign({ userId: this._id, name: this.name }, "jwtSecret", {
-    expiresIn: "30d",
-  })
+  return jwt.sign(
+    { userId: this._id, name: this.name },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_LIFETIME,
+    }
+  )
 }
+
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password)
+  return isMatch
+}
+
 module.exports = mongoose.model("User", UserSchema)
