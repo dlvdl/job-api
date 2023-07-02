@@ -12,6 +12,10 @@ const JobSchema = new mongoose.Schema(
       required: [true, "Please provide position"],
       maxLength: 50,
     },
+    // Mongoose String and Number types have an enum validator. The enum validator is an
+    // array that will check if the value given is an item in
+    // the array. If the value is not in the array, Mongoose will throw a ValidationError
+    // when you try to save().
     status: {
       type: String,
       enum: ["Interniew", "declined", "pending"],
@@ -23,6 +27,8 @@ const JobSchema = new mongoose.Schema(
       required: [true, "Please provide user"],
     },
   },
+  // timestamps property adds to document extra fields with informations
+  // about create time of the document
   { timestamps: true }
 )
 
