@@ -4,11 +4,12 @@ const { UnauthenticatedError } = require("../errors")
 
 const auth = async (req, res, next) => {
   // Check header
-  if (req.headers.authorization) {
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startWith("Bearer")) {
     throw new UnauthenticatedError("Authentification invalid")
   }
 
-  const token = jwt.split(" ")[1]
+  const token = authHeader.split(" ")[1]
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET)
